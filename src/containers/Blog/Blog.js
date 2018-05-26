@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import Posts from '../Blog/Posts/Posts';
-import NewPost from '../../containers/Blog/NewPost/NewPost';
+//import NewPost from '../../containers/Blog/NewPost/NewPost';
 import './Blog.css';
-import { Route, NavLink } from 'react-router-dom'
+import { Route, NavLink, Switch, Redirect } from 'react-router-dom'
+import asyncComponent from '../../hoc/asyncComponent';
 //import axios from 'axios';
+const AsyncNewPost = asyncComponent(() => {
+    return import('../../containers/Blog/NewPost/NewPost');
+});
 class Blog extends Component {
 
     render () {
@@ -12,7 +16,7 @@ class Blog extends Component {
                 <header >
                     <nav>
                         <ul>
-                            <li><NavLink to="/" exact>Home</NavLink></li>
+                            <li><NavLink to="/posts" exact>Posts</NavLink></li>
                             <li><NavLink to={{
                                 pathname:"/new-post",
                                 hash: '#submit',
@@ -22,8 +26,12 @@ class Blog extends Component {
                     </nav>
                 </header>
         {/*<Route path="/" render={() => <h1>hello shubham</h1>} /> */}
-        <Route path="/" exact component= {Posts} />
-        <Route path="/new-post" exact component={NewPost} />
+        <Switch>
+            <Route path="/new-post" exact component={AsyncNewPost} />
+            <Route path="/posts" component= {Posts} />
+                        {/* <Route path="/" component= {Posts} />*/}
+            <Redirect from="/" to= "/posts" />
+        </Switch>
             </div>
         );
     }
